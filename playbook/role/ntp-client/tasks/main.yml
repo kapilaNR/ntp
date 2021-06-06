@@ -1,0 +1,34 @@
+---
+# tasks file for ntp-client
+  - name: install ntp client
+    yum:
+      name: ntp
+      state: present
+  
+  - name: Start ntpd as a service
+    systemd:
+      name: ntpd
+      state: started
+
+  - name: Copy ntp.conffile
+    tags: initial_setup
+    template:
+      src: ntp.conf.j2
+      dest: /etc/ntp.conf
+  
+  - name: Start ntpd as a service
+    systemd:
+      name: ntpd
+      state: restarted
+  
+  - name: ntpd -pn command
+    shell: ntpq -pn
+    register: pn
+
+  - debug: var=pn.stdout_lines
+
+  - name: check date
+    shell: date
+    register: ps
+
+  - debug: var=ps.stdout_lines

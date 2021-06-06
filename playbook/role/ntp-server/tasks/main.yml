@@ -1,0 +1,17 @@
+---
+# tasks file for ntp-server
+  - name: install ntp client
+    yum:
+      name: ntp
+      state: present
+  
+  - name: Copy ntp.conffile
+    tags: initial_setup
+    template:
+      src: ntp.conf.j2
+      dest: /etc/ntp.conf
+
+  - name: Start ntpd as a service
+    systemd:
+      name: ntpd
+      state: restarted
